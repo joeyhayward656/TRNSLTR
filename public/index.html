@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>English ↔ Thai Translator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <div class="header-badge">Classroom helper</div>
+      <h1>English ↔ Thai Translator</h1>
+      <p class="subtitle">Speak or type in either language — get an instant translation for class.</p>
+    </header>
+
+    <div class="direction-toggle" role="group" aria-label="Translation direction">
+      <button type="button" class="direction-btn active" data-direction="th-en" aria-pressed="true">
+        <span>Thai → English</span>
+      </button>
+      <button type="button" class="direction-btn" data-direction="en-th" aria-pressed="false">
+        <span>English → Thai</span>
+      </button>
+      <button type="button" class="direction-btn" data-direction="auto" aria-pressed="false">
+        <span>Auto-detect</span>
+      </button>
+    </div>
+
+    <main class="panels">
+      <section class="panel source-panel" aria-labelledby="source-label">
+        <div class="panel-header">
+          <label id="source-label" class="panel-label">Source</label>
+          <span id="source-lang-badge" class="lang-badge">Thai</span>
+        </div>
+        <textarea
+          id="source-text"
+          class="text-area"
+          rows="6"
+          placeholder="พิมพ์ภาษาไทยที่นี่ หรือกดไมโครโฟนเพื่อพูด..."
+          spellcheck="false"
+        ></textarea>
+        <div class="panel-actions">
+          <button type="button" id="mic-source" class="action-btn mic-btn" aria-label="Speak in source language">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 1 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.71V21h2v-3.29A7 7 0 0 0 19 11h-2z"/></svg>
+            <span>Speak</span>
+          </button>
+          <button type="button" id="clear-source" class="action-btn ghost-btn">Clear</button>
+          <button type="button" id="copy-source" class="action-btn ghost-btn">Copy</button>
+        </div>
+        <p id="speech-status" class="status-line" aria-live="polite"></p>
+      </section>
+
+      <div class="middle-controls">
+        <button type="button" id="swap-btn" class="swap-btn" aria-label="Swap languages" title="Swap languages">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.99 11 3 15l3.99 4v-3H14v-2H6.99V11zM21 9l-3.99-4v3H10v2h7.01v3L21 9z"/></svg>
+        </button>
+        <button type="button" id="translate-btn" class="translate-btn">Translate</button>
+      </div>
+
+      <section class="panel target-panel" aria-labelledby="target-label">
+        <div class="panel-header">
+          <label id="target-label" class="panel-label">Translation</label>
+          <span id="target-lang-badge" class="lang-badge accent">English</span>
+        </div>
+        <textarea
+          id="target-text"
+          class="text-area readonly"
+          rows="6"
+          placeholder="Translation will appear here..."
+          readonly
+          spellcheck="false"
+        ></textarea>
+        <div class="panel-actions">
+          <button type="button" id="speak-target" class="action-btn speak-btn" aria-label="Listen to translation">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 8.05v1.58a2.99 2.99 0 0 1 0 5.88v1.58a4.5 4.5 0 0 0 0-8.04z"/></svg>
+            <span>Listen</span>
+          </button>
+          <button type="button" id="copy-target" class="action-btn ghost-btn">Copy</button>
+        </div>
+        <p id="translate-status" class="status-line" aria-live="polite"></p>
+      </section>
+    </main>
+
+    <section class="phrases">
+      <h2>Quick phrases for class</h2>
+      <div class="phrase-grid" id="phrase-grid"></div>
+    </section>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
