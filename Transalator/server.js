@@ -254,6 +254,10 @@ const server = http.createServer(async (req, res) => {
   serveStatic(filePath, res);
 });
 
-server.listen(PORT, () => {
-  console.log(`Thai-English Translator running at http://localhost:${PORT}`);
-});
+module.exports = server;
+
+if (require.main === module) {
+  server.listen(PORT, () => {
+    console.log(`Thai-English Translator running at http://localhost:${PORT}`);
+  });
+}
