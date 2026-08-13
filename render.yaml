@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: trnsltr
+    runtime: node
+    rootDir: Transalator
+    buildCommand: npm install
+    startCommand: npm start
+    plan: free
+    healthCheckPath: /api/health
+    autoDeploy: true
