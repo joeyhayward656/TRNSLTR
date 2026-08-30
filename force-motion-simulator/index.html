@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2D Force &amp; Motion Simulator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <div class="header-text">
+        <h1>2D Force &amp; Motion Simulator</h1>
+        <p class="subtitle">Explore Newton's Second Law — apply forces, set mass and velocity, and watch the motion unfold.</p>
+      </div>
+    </header>
+
+    <main class="main-layout">
+      <!-- ── Control Panel (Inputs) ── -->
+      <aside class="panel panel-inputs">
+        <h2 class="panel-title">Inputs</h2>
+
+        <fieldset class="input-group">
+          <legend>Object Properties</legend>
+          <label for="mass">Mass (kg)</label>
+          <input type="number" id="mass" min="0.01" step="any" value="2" />
+          <span class="field-hint" id="mass-error"></span>
+
+          <label for="v0x">Initial Velocity X (m/s)</label>
+          <input type="number" id="v0x" step="any" value="0" />
+
+          <label for="v0y">Initial Velocity Y (m/s)</label>
+          <input type="number" id="v0y" step="any" value="0" />
+        </fieldset>
+
+        <fieldset class="input-group">
+          <legend>Applied Forces (N)</legend>
+          <p class="group-desc">Enter the magnitude of each force. Opposing forces cancel out.</p>
+
+          <label for="force-right">Left &rarr; Right</label>
+          <input type="number" id="force-right" min="0" step="any" value="10" />
+
+          <label for="force-left">Right &rarr; Left</label>
+          <input type="number" id="force-left" min="0" step="any" value="0" />
+
+          <label for="force-down">Top &rarr; Bottom</label>
+          <input type="number" id="force-down" min="0" step="any" value="0" />
+
+          <label for="force-up">Bottom &rarr; Top</label>
+          <input type="number" id="force-up" min="0" step="any" value="5" />
+        </fieldset>
+
+        <fieldset class="input-group">
+          <legend>Simulation</legend>
+          <label for="duration">Duration (seconds)</label>
+          <input type="number" id="duration" min="0.1" step="any" value="8" />
+          <span class="field-hint" id="duration-error"></span>
+        </fieldset>
+
+        <div class="button-row">
+          <button type="button" id="btn-start" class="btn btn-primary">Start</button>
+          <button type="button" id="btn-reset" class="btn btn-secondary">Reset</button>
+        </div>
+      </aside>
+
+      <!-- ── Simulation Canvas ── -->
+      <section class="panel panel-simulation">
+        <h2 class="panel-title">Simulation</h2>
+        <div class="canvas-wrapper">
+          <canvas id="sim-canvas" width="720" height="520" aria-label="Force and motion simulation canvas"></canvas>
+          <div class="canvas-legend">
+            <span class="legend-item"><span class="swatch swatch-force-r"></span> Rightward force</span>
+            <span class="legend-item"><span class="swatch swatch-force-l"></span> Leftward force</span>
+            <span class="legend-item"><span class="swatch swatch-force-d"></span> Downward force</span>
+            <span class="legend-item"><span class="swatch swatch-force-u"></span> Upward force</span>
+            <span class="legend-item"><span class="swatch swatch-velocity"></span> Velocity</span>
+            <span class="legend-item"><span class="swatch swatch-accel"></span> Acceleration</span>
+            <span class="legend-item"><span class="swatch swatch-path"></span> Path</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Live Calculations ── -->
+      <aside class="panel panel-data">
+        <h2 class="panel-title">Live Data</h2>
+        <dl class="data-grid">
+          <div class="data-row">
+            <dt>Net Force X</dt>
+            <dd><span id="net-fx">0.00</span> N</dd>
+          </div>
+          <div class="data-row">
+            <dt>Net Force Y</dt>
+            <dd><span id="net-fy">0.00</span> N</dd>
+          </div>
+          <div class="data-row">
+            <dt>Acceleration X</dt>
+            <dd><span id="accel-x">0.00</span> m/s²</dd>
+          </div>
+          <div class="data-row">
+            <dt>Acceleration Y</dt>
+            <dd><span id="accel-y">0.00</span> m/s²</dd>
+          </div>
+          <div class="data-row">
+            <dt>Velocity X</dt>
+            <dd><span id="vel-x">0.00</span> m/s</dd>
+          </div>
+          <div class="data-row">
+            <dt>Velocity Y</dt>
+            <dd><span id="vel-y">0.00</span> m/s</dd>
+          </div>
+          <div class="data-row highlight">
+            <dt>Speed</dt>
+            <dd><span id="speed">0.00</span> m/s</dd>
+          </div>
+          <div class="data-row highlight">
+            <dt>Direction</dt>
+            <dd><span id="direction">0.0</span>°</dd>
+          </div>
+          <div class="data-row">
+            <dt>Position X</dt>
+            <dd><span id="pos-x">0.00</span> m</dd>
+          </div>
+          <div class="data-row">
+            <dt>Position Y</dt>
+            <dd><span id="pos-y">0.00</span> m</dd>
+          </div>
+          <div class="data-row">
+            <dt>Elapsed Time</dt>
+            <dd><span id="elapsed">0.00</span> s</dd>
+          </div>
+        </dl>
+      </aside>
+    </main>
+
+    <!-- ── How It Works ── -->
+    <section class="panel panel-info">
+      <h2 class="panel-title">How It Works</h2>
+      <div class="info-content">
+        <p>
+          This simulator uses <strong>Newton's Second Law</strong>:
+          the net force on an object equals its mass times its acceleration (<em>F = ma</em>).
+        </p>
+        <div class="equations">
+          <div class="equation-block">
+            <h3>Net Force</h3>
+            <p>F<sub>net,x</sub> = F<sub>right</sub> − F<sub>left</sub></p>
+            <p>F<sub>net,y</sub> = F<sub>down</sub> − F<sub>up</sub></p>
+          </div>
+          <div class="equation-block">
+            <h3>Acceleration</h3>
+            <p>a<sub>x</sub> = F<sub>net,x</sub> / m</p>
+            <p>a<sub>y</sub> = F<sub>net,y</sub> / m</p>
+          </div>
+          <div class="equation-block">
+            <h3>Velocity &amp; Position</h3>
+            <p>v = u + at</p>
+            <p>s = ut + ½at²</p>
+          </div>
+          <div class="equation-block">
+            <h3>Speed &amp; Direction</h3>
+            <p>speed = √(v<sub>x</sub>² + v<sub>y</sub>²)</p>
+            <p>direction = atan2(v<sub>y</sub>, v<sub>x</sub>)</p>
+          </div>
+        </div>
+        <p class="info-note">
+          When the net force is zero, acceleration is zero and the object moves at constant velocity (Newton's First Law).
+          Opposing forces of equal magnitude cancel each other out.
+        </p>
+      </div>
+    </section>
+  </div>
+
+  <script src="simulator.js"></script>
+</body>
+</html>
